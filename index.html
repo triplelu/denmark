@@ -23,11 +23,7 @@ tailwind.config = {
 body{font-family:'Jost',sans-serif;background:#F0F9FF;color:#0C4A6E;scroll-behavior:smooth}
 .font-heading{font-family:'Bodoni Moda',serif}
 
-/* Timeline */
-.tl-wrap{position:relative;padding-left:2.5rem}
-.tl-line{position:absolute;left:20px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#0EA5E9,#BAE6FD)}
-.tl-dot{position:absolute;left:12px;width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid #0EA5E9;z-index:1;top:8px}
-.tl-dot.hi{background:#0EA5E9}
+/* Timeline — flex-based, no absolute positioning needed */
 
 /* Day card accordion */
 .day-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
@@ -82,6 +78,7 @@ body{font-family:'Jost',sans-serif;background:#F0F9FF;color:#0C4A6E;scroll-behav
       <a href="#flights"       class="nav-a">航班資訊</a>
       <a href="#itinerary"     class="nav-a">每日行程</a>
       <a href="#attractions"   class="nav-a">景點地圖</a>
+      <a href="#restaurants"   class="nav-a">美食地圖</a>
       <a href="#meals"         class="nav-a">餐食總覽</a>
       <a href="#accommodation" class="nav-a">住宿資訊</a>
     </div>
@@ -261,8 +258,29 @@ body{font-family:'Jost',sans-serif;background:#F0F9FF;color:#0C4A6E;scroll-behav
   </div>
 </section>
 
+<!-- RESTAURANTS -->
+<section id="restaurants" class="py-16 bg-[#F0F9FF]">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-10 fi">
+      <h2 class="font-heading text-3xl sm:text-4xl font-bold text-text-dk mb-2">美食地圖</h2>
+      <p class="text-sky-500 text-sm">沿途推薦餐廳與美食 · 附 Google Maps 連結</p>
+      <div class="w-12 h-0.5 bg-primary mx-auto mt-4"></div>
+    </div>
+    <div class="flex gap-2 justify-center mb-8 fi flex-wrap">
+      <button onclick="filterRest('all')"     class="fbtn active" data-rf="all">全部</button>
+      <button onclick="filterRest('海鮮')"    class="fbtn" data-rf="海鮮">海鮮</button>
+      <button onclick="filterRest('小吃市場')" class="fbtn" data-rf="小吃市場">小吃市場</button>
+      <button onclick="filterRest('甜點')"    class="fbtn" data-rf="甜點">甜點</button>
+      <button onclick="filterRest('咖啡廳')"  class="fbtn" data-rf="咖啡廳">咖啡廳</button>
+      <button onclick="filterRest('北歐料理')" class="fbtn" data-rf="北歐料理">北歐料理</button>
+      <button onclick="filterRest('德國料理')" class="fbtn" data-rf="德國料理">德國料理</button>
+    </div>
+    <div id="rest-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 fi"></div>
+  </div>
+</section>
+
 <!-- MEALS -->
-<section id="meals" class="py-16 bg-[#F0F9FF]">
+<section id="meals" class="py-16 bg-white">
   <div class="max-w-6xl mx-auto px-4">
     <div class="text-center mb-10 fi">
       <h2 class="font-heading text-3xl sm:text-4xl font-bold text-text-dk mb-2">餐食總覽</h2>
@@ -280,7 +298,7 @@ body{font-family:'Jost',sans-serif;background:#F0F9FF;color:#0C4A6E;scroll-behav
 </section>
 
 <!-- ACCOMMODATION -->
-<section id="accommodation" class="py-16 bg-white">
+<section id="accommodation" class="py-16 bg-[#F0F9FF]">
   <div class="max-w-6xl mx-auto px-4">
     <div class="text-center mb-10 fi">
       <h2 class="font-heading text-3xl sm:text-4xl font-bold text-text-dk mb-2">住宿資訊</h2>
@@ -485,27 +503,55 @@ const ACCS = [
   {nights:'第 12–13 天',dates:'8/05–8/06',name:'夜宿機上',type:'機上',city:'機上',desc:'搭乘 EK-062/EK-366 返回台灣',m:null},
 ];
 
+const RESTAURANTS = [
+  {n:'Bryggeriet Viborg',      city:'維堡',   co:'denmark', cat:'北歐料理', desc:'維堡本地釀酒廠餐廳，精釀啤酒搭配北歐傳統料理，在地氛圍輕鬆', m:'https://www.google.com/maps/search/?api=1&query=Bryggeriet+Viborg+Denmark'},
+  {n:'Torvehallerne 美食市場',  city:'哥本哈根',co:'denmark', cat:'小吃市場', desc:'哥本哈根最大室內美食市場，新鮮食材、熟食攤位、精品咖啡一應俱全', m:'https://www.google.com/maps/search/?api=1&query=Torvehallerne+Copenhagen'},
+  {n:'Aamanns 1921',           city:'哥本哈根',co:'denmark', cat:'北歐料理', desc:'正宗丹麥開放式三明治 Smørrebrød 名店，傳統工法呈現北歐風味', m:'https://www.google.com/maps/search/?api=1&query=Aamanns+1921+Copenhagen'},
+  {n:'Copenhagen Street Food',  city:'哥本哈根',co:'denmark', cat:'小吃市場', desc:'廢棄造紙廠改建的街頭美食市集，40＋攤位，北歐特色小吃聚集', m:'https://www.google.com/maps/search/?api=1&query=Copenhagen+Street+Food'},
+  {n:'Lagkagehuset',            city:'哥本哈根',co:'denmark', cat:'甜點',    desc:'丹麥頂級烘焙坊，酥脆可頌、肉桂卷與丹麥奶酥麵包不可錯過', m:'https://www.google.com/maps/search/?api=1&query=Lagkagehuset+Copenhagen'},
+  {n:'La Glace',                city:'哥本哈根',co:'denmark', cat:'甜點',    desc:'1870年創立哥本哈根最古老糕點店，招牌運動蛋糕 Sportskage 聞名全丹', m:'https://www.google.com/maps/search/?api=1&query=La+Glace+Copenhagen'},
+  {n:'The Coffee Collective',   city:'哥本哈根',co:'denmark', cat:'咖啡廳',  desc:'北歐精品咖啡領軍品牌，多次獲世界咖啡師大賽冠軍，手沖單品一流', m:'https://www.google.com/maps/search/?api=1&query=The+Coffee+Collective+Copenhagen'},
+  {n:'Café Kronborg',           city:'赫爾辛格',co:'denmark', cat:'咖啡廳',  desc:'克倫波城堡旁百年咖啡廳，欣賞丹麥海峽美景，供應丹麥傳統點心', m:'https://www.google.com/maps/search/?api=1&query=Cafe+Kronborg+Helsingor+Denmark'},
+  {n:'Niederegger Café',        city:'呂貝克',  co:'germany', cat:'甜點',    desc:'1806年創立，世界最著名杏仁膏 Marzipan 品牌旗艦咖啡廳，必買伴手禮', m:'https://www.google.com/maps/search/?api=1&query=Niederegger+Cafe+Lubeck'},
+  {n:'Schiffergesellschaft',    city:'呂貝克',  co:'germany', cat:'海鮮',    desc:'1535年航海公會改建，漢薩風格木製裝潢，德北傳統海鮮與鄉村料理', m:'https://www.google.com/maps/search/?api=1&query=Schiffergesellschaft+Lubeck'},
+  {n:'Zur Kogge',               city:'羅斯托克',co:'germany', cat:'海鮮',    desc:'羅斯托克老城百年餐廳，漢薩同盟風格，波羅的海當日鮮魚料理', m:'https://www.google.com/maps/search/?api=1&query=Zur+Kogge+Rostock'},
+  {n:'Fischereihafen Restaurant',city:'漢堡',   co:'germany', cat:'海鮮',    desc:'漢堡港口頂級海鮮餐廳，當日漁獲料理，360 度水岸景觀', m:'https://www.google.com/maps/search/?api=1&query=Fischereihafen+Restaurant+Hamburg'},
+  {n:'漢堡魚市場 Fischmarkt',    city:'漢堡',   co:'germany', cat:'小吃市場', desc:'逾 300 年歷史早市（週日 04:00–09:30），海鮮、熟食與醃製品集散地', m:'https://www.google.com/maps/search/?api=1&query=Hamburg+Fischmarkt'},
+  {n:'Altes Mädchen',           city:'漢堡',   co:'germany', cat:'德國料理', desc:'老馬廄改建精釀啤酒廠兼餐廳，漢堡傳統豬腳搭配自釀精釀啤酒', m:'https://www.google.com/maps/search/?api=1&query=Altes+Madchen+Hamburg'},
+  {n:'Café Paris',              city:'漢堡',   co:'germany', cat:'咖啡廳',  desc:'1882年法式新藝術咖啡廳，保留典雅原始裝潢，漢堡市中心老字號', m:'https://www.google.com/maps/search/?api=1&query=Cafe+Paris+Hamburg'},
+];
+
 // ── RENDER DAYS ────────────────────────────────────────────────
 function renderDays() {
   const con = document.getElementById('days-container');
   con.innerHTML = DAYS.map((day,idx) => {
-    const evHtml = day.ev.map(ev => `
-      <div class="relative mb-4 last:mb-0">
-        <div class="tl-dot ${ev.hi?'hi':''}"></div>
-        <div class="${ev.hi?'bg-sky-50 border-l-2 border-[#0EA5E9] rounded-xl p-3 -ml-1':''} flex gap-3 items-start">
-          <span class="flex-shrink-0 text-xs font-mono text-sky-400 w-12 pt-0.5 leading-tight">${ev.t}</span>
-          <div class="flex-shrink-0 w-6 h-6 ${ev.hi?'bg-[#0EA5E9]':'bg-sky-100'} rounded-full flex items-center justify-center ${ev.hi?'text-white':'text-sky-500'}">
-            ${IC[ev.i]||IC.walk}
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex flex-wrap items-center gap-1.5">
-              <span class="text-sm font-semibold text-[#0C4A6E]">${ev.l}</span>
-              ${ev.m?`<a href="${ev.m}" target="_blank" rel="noopener noreferrer" class="mlink">${IC.pin}<span>Maps</span>${IC.ext}</a>`:''}
+    const evHtml = day.ev.map((ev, evIdx) => {
+      const isLast = evIdx === day.ev.length - 1;
+      return `
+      <div class="flex items-stretch">
+        <div class="flex flex-col items-center flex-shrink-0 mr-3" style="width:14px">
+          <div class="w-3 h-3 rounded-full flex-shrink-0 mt-2 ${ev.hi?'bg-[#0EA5E9] ring-2 ring-sky-200':'bg-white border-2 border-sky-300'}"></div>
+          ${!isLast?`<div class="w-px flex-1 mt-1" style="background:linear-gradient(to bottom,#7DD3FC55,#BAE6FD22)"></div>`:''}
+        </div>
+        <div class="flex-1 min-w-0 ${isLast?'pb-0':'pb-3'}">
+          <div class="${ev.hi?'bg-sky-50 border border-sky-100 rounded-xl p-2.5':''}">
+            <div class="flex items-start gap-2">
+              <div class="flex-shrink-0 w-5 h-5 mt-0.5 ${ev.hi?'bg-[#0EA5E9]':'bg-sky-100'} rounded-full flex items-center justify-center ${ev.hi?'text-white':'text-sky-400'}">
+                ${IC[ev.i]||IC.walk}
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-sm font-semibold text-[#0C4A6E]">${ev.l}</span>
+                  ${ev.m?`<a href="${ev.m}" target="_blank" rel="noopener noreferrer" class="mlink">${IC.pin}<span>Maps</span>${IC.ext}</a>`:''}
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">${ev.s}</p>
+              </div>
+              <span class="flex-shrink-0 text-[10px] font-mono text-sky-400 bg-white border border-sky-100 px-1.5 py-0.5 rounded-full mt-0.5 whitespace-nowrap">${ev.t}</span>
             </div>
-            <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">${ev.s}</p>
           </div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
 
     return `
     <div class="bg-white rounded-2xl border border-sky-50 shadow-sm hover:shadow-md transition-shadow fi">
@@ -619,6 +665,52 @@ function renderAcc() {
     </div>`).join('');
 }
 
+// ── RENDER RESTAURANTS ─────────────────────────────────────────
+const REST_CAT_CLR = {
+  '北歐料理':'bg-sky-100 text-sky-700',
+  '海鮮':'bg-teal-100 text-teal-700',
+  '小吃市場':'bg-amber-100 text-amber-700',
+  '甜點':'bg-pink-100 text-pink-700',
+  '咖啡廳':'bg-stone-100 text-stone-600',
+  '德國料理':'bg-orange-100 text-orange-700',
+};
+
+const CITY_CLR = {
+  '維堡':'bg-emerald-50 text-emerald-600 border-emerald-100',
+  '哥本哈根':'bg-sky-50 text-sky-600 border-sky-100',
+  '赫爾辛格':'bg-indigo-50 text-indigo-600 border-indigo-100',
+  '呂貝克':'bg-purple-50 text-purple-600 border-purple-100',
+  '羅斯托克':'bg-slate-50 text-slate-600 border-slate-200',
+  '漢堡':'bg-orange-50 text-orange-600 border-orange-100',
+};
+
+function renderRestaurants(filter) {
+  const list = filter==='all' ? RESTAURANTS : RESTAURANTS.filter(r=>r.cat===filter);
+  document.getElementById('rest-grid').innerHTML = list.length===0
+    ? `<div class="col-span-full text-center text-sky-400 text-sm py-10">目前分類暫無餐廳資料</div>`
+    : list.map(r=>`
+    <div class="bg-white rounded-2xl p-5 border border-sky-50 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
+      <div class="flex items-start justify-between mb-3">
+        <span class="text-xs px-2.5 py-1 rounded-full font-medium ${REST_CAT_CLR[r.cat]||'bg-sky-100 text-sky-700'}">${r.cat}</span>
+        <span class="text-[10px] font-medium px-2 py-0.5 rounded-full border ${r.co==='denmark'?'bg-red-50 text-red-500 border-red-100':'bg-slate-50 text-slate-500 border-slate-200'}">${r.co==='denmark'?'丹麥':'德國'}</span>
+      </div>
+      <h3 class="font-semibold text-[#0C4A6E] text-sm mb-2">${r.n}</h3>
+      <p class="text-xs flex items-center gap-1 mb-2">
+        ${IC.pin}
+        <span class="font-medium px-2 py-0.5 rounded-full border text-[11px] ${CITY_CLR[r.city]||'bg-sky-50 text-sky-600 border-sky-100'}">${r.city}</span>
+      </p>
+      <p class="text-xs text-slate-500 mb-4 leading-relaxed">${r.desc}</p>
+      <a href="${r.m}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs text-[#0EA5E9] hover:text-[#0284C7] font-medium transition-colors cursor-pointer">
+        ${IC.pin}在 Google Maps 中開啟${IC.ext}
+      </a>
+    </div>`).join('');
+}
+
+function filterRest(f) {
+  renderRestaurants(f);
+  document.querySelectorAll('[data-rf]').forEach(b=>b.classList.toggle('active', b.dataset.rf===f));
+}
+
 // ── INTERACTIONS ───────────────────────────────────────────────
 function toggle(idx) {
   const db = document.getElementById('db-'+idx);
@@ -648,7 +740,7 @@ function onScroll() {
   const btt = document.getElementById('btt');
   btt.classList.toggle('show', window.scrollY>300);
 
-  const secs = ['flights','itinerary','attractions','meals','accommodation'];
+  const secs = ['flights','itinerary','attractions','restaurants','meals','accommodation'];
   const y = window.scrollY+80;
   let cur = '';
   secs.forEach(id=>{ const el=document.getElementById(id); if(el&&el.offsetTop<=y) cur=id; });
@@ -674,7 +766,7 @@ function initFI() {
 window.addEventListener('scroll', onScroll, {passive:true});
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  renderDays(); renderAttr('all'); renderMeals('all'); renderAcc();
+  renderDays(); renderAttr('all'); renderRestaurants('all'); renderMeals('all'); renderAcc();
   setTimeout(initFI,80);
   onScroll();
   // Open first day by default
