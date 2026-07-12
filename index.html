@@ -77,6 +77,7 @@ body{font-family:'Jost',sans-serif;background:#F0F9FF;color:#0C4A6E;scroll-behav
     <div class="flex items-center gap-0.5 overflow-x-auto">
       <a href="#flights"       class="nav-a">航班資訊</a>
       <a href="#itinerary"     class="nav-a">每日行程</a>
+      <a href="#matches"       class="nav-a">預賽賽程</a>
       <a href="#attractions"   class="nav-a">景點地圖</a>
       <a href="#restaurants"   class="nav-a">美食地圖</a>
       <a href="#meals"         class="nav-a">餐食總覽</a>
@@ -238,6 +239,23 @@ body{font-family:'Jost',sans-serif;background:#F0F9FF;color:#0C4A6E;scroll-behav
       <button onclick="collapseAll()" class="fbtn text-xs">全部收合</button>
     </div>
     <div id="days-container" class="space-y-3"></div>
+  </div>
+</section>
+
+<!-- MATCHES -->
+<section id="matches" class="py-16 bg-white">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-10 fi">
+      <h2 class="font-heading text-3xl sm:text-4xl font-bold text-text-dk mb-2">預賽賽程</h2>
+      <p class="text-sky-500 text-sm">崇倫國中 Chung Lun JHS · 分組預賽時間表（丹麥時間／台灣時間）</p>
+      <div class="w-12 h-0.5 bg-primary mx-auto mt-4"></div>
+    </div>
+    <div class="flex gap-2 justify-center mb-8 fi flex-wrap">
+      <button onclick="filterMatch('all')"   class="fbtn active" data-mtf="all">全部 12 場</button>
+      <button onclick="filterMatch('youth')" class="fbtn" data-mtf="youth">室內賽 Youth</button>
+      <button onclick="filterMatch('beach')" class="fbtn" data-mtf="beach">沙灘賽 Beach</button>
+    </div>
+    <div id="matches-container" class="space-y-6 fi"></div>
   </div>
 </section>
 
@@ -461,6 +479,21 @@ const DAYS = [
     ]},
 ];
 
+const MATCHES = [
+  {date:'7/28',wd:'二',type:'youth',cls:'U-13 女子組',grp:'Group 1',  t:'09:15',tw:'15:15',nx:false, a:'SIK Viborg 1 (DEN)',              b:'崇倫國中 Chung Lun JHS (TPE)', us:'b', field:'Landbobanken 3'},
+  {date:'7/28',wd:'二',type:'youth',cls:'U-15 女子組',grp:'Group 3',  t:'11:30',tw:'17:30',nx:false, a:'崇倫國中 Chung Lun JHS (TPE)',    b:'Viborg HK 1 (DEN)',            us:'a', field:'Sport24 Arena'},
+  {date:'7/28',wd:'二',type:'youth',cls:'U-13 女子組',grp:'Group 1',  t:'13:20',tw:'19:20',nx:false, a:'崇倫國中 Chung Lun JHS (TPE)',    b:'Viborg HK 2 (DEN)',            us:'a', field:'Landbobanken 3'},
+  {date:'7/28',wd:'二',type:'beach',cls:'U-13 女子組',grp:'Group 3',  t:'18:30',tw:'00:30',nx:true,  a:'Viborg HK 2 (DEN)',              b:'崇倫國中 Chung Lun JHS (TPE)', us:'b', field:'McChicken (1)'},
+  {date:'7/28',wd:'二',type:'youth',cls:'U-15 女子組',grp:'Group 3',  t:'19:30',tw:'01:30',nx:true,  a:'崇倫國中 Chung Lun JHS (TPE)',    b:'Rælingen HK 2 (NOR)',          us:'a', field:'Sport24 Arena'},
+  {date:'7/29',wd:'三',type:'youth',cls:'U-13 女子組',grp:'Group 1',  t:'09:50',tw:'15:50',nx:false, a:'EB 1 (FAE)',                      b:'崇倫國中 Chung Lun JHS (TPE)', us:'b', field:'Landbobanken 3'},
+  {date:'7/29',wd:'三',type:'youth',cls:'U-15 女子組',grp:'Group 3',  t:'13:00',tw:'19:00',nx:false, a:'SIK Viborg 3 (DEN)',              b:'崇倫國中 Chung Lun JHS (TPE)', us:'b', field:'BioCirc Arena'},
+  {date:'7/29',wd:'三',type:'youth',cls:'U-13 女子組',grp:'Group 1',  t:'15:05',tw:'21:05',nx:false, a:'崇倫國中 Chung Lun JHS (TPE)',    b:'GSS Håndbold 2 (GRL)',         us:'a', field:'Landbobanken 3'},
+  {date:'7/29',wd:'三',type:'youth',cls:'U-15 女子組',grp:'Group 3',  t:'16:45',tw:'22:45',nx:false, a:'DHC Waasmunster (BEL)',           b:'崇倫國中 Chung Lun JHS (TPE)', us:'b', field:'BioCirc Arena'},
+  {date:'7/29',wd:'三',type:'beach',cls:'U-15 女子組',grp:'Group 10', t:'20:20',tw:'02:20',nx:true,  a:'崇倫國中 Chung Lun JHS (TPE)',    b:'Elite Silkeborg 4 (DEN)',      us:'a', field:'McFeast (2)'},
+  {date:'7/30',wd:'四',type:'beach',cls:'U-15 女子組',grp:'Group 10', t:'21:00',tw:'03:00',nx:true,  a:'Asmild FH 2 (DEN)',               b:'崇倫國中 Chung Lun JHS (TPE)', us:'b', field:'McFeast (2)'},
+  {date:'7/31',wd:'五',type:'beach',cls:'U-13 女子組',grp:'Group 3',  t:'18:20',tw:'00:20',nx:true,  a:'崇倫國中 Chung Lun JHS (TPE)',    b:'EB 4 (FAE)',                    us:'a', field:'McChicken (1)'},
+];
+
 const ATTRS = [
   {n:'Generation Handball Cup 場地', co:'denmark', city:'維堡 Viborg', cat:'運動場館', desc:'2026丹麥維堡國際手球分齡賽錦標賽主場館', m:'https://www.google.com/maps/search/?api=1&query=Viborg+Handball+Arena+Denmark'},
   {n:'LEGOLAND® Billund Resort',     co:'denmark', city:'比隆 Billund',  cat:'主題樂園', desc:'全球首座樂高樂園，50+設施，2026全新 Minifigure Speedway 雙軌雲霄飛車', m:'https://www.google.com/maps/search/?api=1&query=LEGOLAND+Billund+Resort+Denmark'},
@@ -594,6 +627,69 @@ function renderDays() {
       </div>
     </div>`;
   }).join('');
+}
+
+// ── RENDER MATCHES ─────────────────────────────────────────────
+const MATCH_TYPE = {
+  youth:{label:'YOUTH TOURNAMENT', clr:'bg-emerald-100 text-emerald-700'},
+  beach:{label:'BEACH TOURNAMENT', clr:'bg-amber-100 text-amber-700'},
+};
+
+const CLS_CLR = {
+  'U-13 女子組':'bg-sky-100 text-sky-700',
+  'U-15 女子組':'bg-purple-100 text-purple-700',
+};
+
+function renderMatches(filter) {
+  const list = filter==='all' ? MATCHES : MATCHES.filter(m=>m.type===filter);
+  const groups = [];
+  list.forEach(m=>{
+    let g = groups.find(g=>g.date===m.date);
+    if(!g){ g={date:m.date, wd:m.wd, items:[]}; groups.push(g); }
+    g.items.push(m);
+  });
+  document.getElementById('matches-container').innerHTML = groups.map(g=>`
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-xs text-white px-2.5 py-1 rounded-full font-medium bg-primary">2026/${g.date}（${g.wd}）</span>
+        <div class="flex-1 h-px bg-sky-100"></div>
+        <span class="text-xs text-sky-400">${g.items.length} 場</span>
+      </div>
+      <div class="space-y-3">
+        ${g.items.map(m=>`
+        <div class="bg-white rounded-2xl p-4 border border-sky-50 shadow-sm hover:shadow-md transition-all duration-300">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-medium ${MATCH_TYPE[m.type].clr}">${MATCH_TYPE[m.type].label}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-medium ${CLS_CLR[m.cls]||'bg-sky-100 text-sky-700'}">${m.cls}</span>
+              <span class="text-[10px] text-slate-400">${m.grp}</span>
+            </div>
+            <div class="text-right flex-shrink-0">
+              <span class="font-heading text-base font-bold text-text-dk">${m.t}</span>
+              <span class="text-[10px] text-slate-400 ml-1">丹麥</span>
+              <div class="text-[11px] text-sky-500">台灣 ${m.tw}${m.nx?' <sup class="text-accent">+1</sup>':''}</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+            <div class="text-right min-w-0">
+              <p class="text-sm truncate ${m.us==='a'?'font-bold text-primary':'text-[#0C4A6E]'}">${m.a}</p>
+              ${m.us==='a'?'<span class="text-[10px] text-primary font-medium">我方</span>':''}
+            </div>
+            <span class="text-xs text-slate-300 font-heading font-bold px-1">VS</span>
+            <div class="text-left min-w-0">
+              <p class="text-sm truncate ${m.us==='b'?'font-bold text-primary':'text-[#0C4A6E]'}">${m.b}</p>
+              ${m.us==='b'?'<span class="text-[10px] text-primary font-medium">我方</span>':''}
+            </div>
+          </div>
+          <p class="text-[11px] text-sky-400 mt-3 flex items-center gap-1">${IC.pin}${m.field}</p>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function filterMatch(f) {
+  renderMatches(f);
+  document.querySelectorAll('[data-mtf]').forEach(b=>b.classList.toggle('active', b.dataset.mtf===f));
 }
 
 // ── RENDER ATTRACTIONS ─────────────────────────────────────────
@@ -740,7 +836,7 @@ function onScroll() {
   const btt = document.getElementById('btt');
   btt.classList.toggle('show', window.scrollY>300);
 
-  const secs = ['flights','itinerary','attractions','restaurants','meals','accommodation'];
+  const secs = ['flights','itinerary','matches','attractions','restaurants','meals','accommodation'];
   const y = window.scrollY+80;
   let cur = '';
   secs.forEach(id=>{ const el=document.getElementById(id); if(el&&el.offsetTop<=y) cur=id; });
@@ -766,7 +862,7 @@ function initFI() {
 window.addEventListener('scroll', onScroll, {passive:true});
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  renderDays(); renderAttr('all'); renderRestaurants('all'); renderMeals('all'); renderAcc();
+  renderDays(); renderMatches('all'); renderAttr('all'); renderRestaurants('all'); renderMeals('all'); renderAcc();
   setTimeout(initFI,80);
   onScroll();
   // Open first day by default
